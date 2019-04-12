@@ -28,13 +28,18 @@ select opinions.opdescription
 	from opinions, buy, customer, (select count(distinct buy.ID) as cantidad, buy.Id codigo from buy group by buy.Referencenumber) as pp
 		where cantidad>3 and buy.ID=codigo and opinions.email=user.email and customer.DNI=buy.ID;
 /*EX8*/
---
+!->select disk.title, disk.Referencenumber 
+	from disk inner join has on disk.Referencenumber = has.disk.Referencenumber
+where has.duration>5 and disk.format = "Physical" and disk.typeofphy = "CD";
 /*EX9*/
 select musician.name from musicgroup, perform, musician, concerts, members
 where concerts.City like "Madrid" and perform.Code=concerts.Code and perform.groupID=musicgroup.groupID and
 members.groupID=musicgroup.groupID and members.ID=musician.ID;
 /*EX10*/
---
+!->select opdescription 
+	from aboutconcerts, musicgroup, perform, musician, concerts, members
+where concerts.City like "Madrid" and perform.Code=concerts.Code and perform.groupID=musicgroup.groupID and
+members.groupID=musicgroup.groupID and members.ID=musician.ID;
 /*EX11*/
 select song.*, musician.name from (((musician natural join composes) natural join song) natural join has) natural join disks
 where disks.genre like "Heavy Metal" and disks.year=2018;
@@ -43,9 +48,14 @@ select musician.name from musician, plays, instrument, musicgroup, members
 where musicgroup.genre like "Jazz" and musician.ID=members.ID and members.ID=musicgroup.groupID
 and plays.ID=musician.ID and instrument.numserie=plays.numserie and instrument like "guitar";
 /*EX13*/
---
+!->select user.name, user.surname
+	from user inner join buytickets on user.email = buytickets.email inner join tickets on tickets.ticketcode = buytickets.ticketcode
+	natural join concerts inner join perform on perform.Code = concerts.code inner join groups on musicgroup.groupID = perform.groupID
+where concerts.year = tickets.year = 2018 and concerts.month = tickets.month and concerts.day = ticekts.day and musicgroup.genre = "Jazz";
 /*EX14*/
---
+!->select disk.title, song.name 
+	from disk inner join has on has.Referencenumber = disk.Referencenumber inner song on song.name = has.name inner join aboutdisks on disks.Referencenumber = disk.Referencenumber
+where aboutdisks.rating>8;
 /*EX15*/
 select musicgroup.*, members.ID from musicgroup inner join members on members.groupID=musicgroup.groupID
 where musicgroup.groupID 
