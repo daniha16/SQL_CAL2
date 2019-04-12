@@ -16,8 +16,14 @@ drop table if exists composes;
 drop table if exists concerts;
 drop table if exists musician;
 drop table if exists tickets;
-drop table if exists customer;
-drop table if exists Disks;
+drop table if exists user;
+drop table if exists disk;
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+/*He cambiado customer por user para que no haya confusiones con los enunciados*/     |
+/*Tambien he cambiado Disks por disk y modificado las queries para que sea coherente*/|
+/*Añadido el atributo rating en aboutdisks*/
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 create table musician
 (	name varchar(10),
@@ -60,9 +66,9 @@ create table concerts
     Code	char(9),
     primary key (Code)
 );
-create table Disks
+create table disk
 (	Referencenumber numeric(9,0),
-	format		varchar(10), check (format in ("Digital","physical")),
+	format		varchar(10), check (format in ("Digital","Physical")),
 	title	varchar(10),
     year numeric(4,0),
     month numeric(4,0),
@@ -70,11 +76,11 @@ create table Disks
     genre varchar(10),
     typeofencoding		varchar(10), check (typeofencoding in("MP3", "AAC", "WMA", "FLAC") and format in ("Digital")),
     Size	int,
-    typeofphy	varchar(10), check (typeofphy in ("CD", "LP") and format in ("physical")),
+    typeofphy	varchar(10), check (typeofphy in ("CD", "LP") and format in ("Physical")),
     primary key (Referencenumber)
 );
 
-create table customer
+create table user
 (	name varchar(10),
 	email varchar(10),
     points int,
@@ -94,7 +100,7 @@ create table opinions
 (	opdescription varchar(500),
 	email varchar(10),
     primary key (email, opdescription),
-    foreign key (email) references customer(email)
+    foreign key (email) references user(email)
 );
 create table plays
 (	ID	char(9),
@@ -117,10 +123,11 @@ create table has
     day numeric(2,0),
     month numeric(2,0),
 	name varchar(10),
-    ID	char(9),
+    ID	char(9),u
     primary Key(Referencenumber, ID), 
-    foreign Key(Referencenumber) references Disks(Referencenumber),
-    foreign Key(ID) references musician(ID)
+    foreign Key(Referencenumber) references disk(Referencenumber),
+    foreign Key(ID) references musician(ID),
+    foreign Key(name) references song(name)
     );
 create table members
 (	ID	char(9),
@@ -141,30 +148,31 @@ create table record
 	Referencenumber numeric(9,0),
     primary key(groupID, Referencenumber),
     foreign key(groupID) references musicgroup(groupID),
-    foreign key(Referencenumber) references disks(Referencenumber)
+    foreign key(Referencenumber) references disk(Referencenumber)
     );
 create table buytickets
 (	ticketcode	numeric(9,0),
 	email varchar(10),
 	primary key(ticketcode, email),
     foreign key(ticketcode) references tickets(ticketcode),
-    foreign key(email) references customer(email)
+    foreign key(email) references user(email)
 );
 create table buydisks
 (
 	Referencenumber	 numeric(9,0),
 	email varchar(10),
 	primary key(Referencenumber, email),
-    foreign key(Referencenumber) references Disks(Referencenumber),
-    foreign key(email) references customer(email)
+    foreign key(Referencenumber) references disk(Referencenumber),
+    foreign key(email) references user(email)
 );
 create table aboutdisks
 (
 	Referencenumber numeric(9,0),
 	opdescription	varchar(500),
+	rating		numeric(10,0)
     email	varchar(10),
 	primary key(Referencenumber, email),
-    foreign key(Referencenumber) references Disks(Referencenumber),
+    foreign key(Referencenumber) references disk(Referencenumber),
     foreign key(email) references opinions(email)
 );
 create table aboutconcerts
@@ -178,5 +186,3 @@ create table aboutconcerts
 );
 
 
-
-        
